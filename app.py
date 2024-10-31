@@ -10,24 +10,18 @@ app = Flask(__name__)
 
 @app.route('/predecir', methods=['POST'])
 def predecir():
-    # Obtener los datos de la petición
+    # Obtener los datos de la petición, que ahora se espera que sea una lista de objetos
     data = request.get_json()
 
-    # Convertir los datos en el formato que el modelo espera
-    # Ejemplo: {"tipo": 1, "tiempo": 8, "peso": 50, "bugs": 2}
-    tipo = data['tipo']
-    tiempo = data['tiempo']
-    peso = data['peso']
-    bugs = data['bugs']
+    # Convertir los datos en un array de predicción adecuado para el modelo
+    datos_tareas = np.array([[tarea['tipo'], tarea['tiempo'], tarea['peso'], tarea['bugs']] for tarea in data])
 
-    # Crear un array para hacer la predicción
-    datos_prediccion = np.array([[tipo, tiempo, peso, bugs]])
+    # Hacer las predicciones con el modelo cargado
+    predicciones = model.predict(datos_tareas)
 
-    # Hacer la predicción con el modelo cargado
-    prediccion = model.predict(datos_prediccion)
-
-    # Retornar la predicción como respuesta JSON
-    return jsonify({'prioridad_predicha': prediccion[0]})
+    # Retornar las predicciones como respuesta JSON
+    return jsonify({'resultados': predicciones.tolist()})
 
 if __name__ == '__main__':
     app.run(debug=True)
+
