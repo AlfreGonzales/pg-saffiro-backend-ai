@@ -17,6 +17,8 @@ def predecir():
     """
     Predicción de tareas.
     ---
+    tags:
+    - Tareas
     parameters:
       - name: tareas
         in: body
